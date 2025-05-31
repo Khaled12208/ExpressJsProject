@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3001:3000'
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongodb:27017/express-ts-api
+      - JWT_SECRET=your-secret-key
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  test:
+    build: .
+    command: >
+      sh -c "node scripts/wait-for-db.js &&
+             npm test"
+    environment:
+      - NODE_ENV=test
+      - MONGODB_URI=mongodb://mongodb:27017/express-ts-api-test
+      - JWT_SECRET=test-secret-key
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

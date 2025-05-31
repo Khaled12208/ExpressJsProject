@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="0.811" tests="1" failures="1">
+  <testsuite name="Root Suite" timestamp="2025-05-31T12:52:24" tests="1" file="cypress/e2e/features/auth.feature" time="0.810" failures="1">
+    <testcase name="An uncaught error was detected outside of a test" time="0.000" classname="An uncaught error was detected outside of a test">
+      <failure message="The following error originated from your test code, not from Cypress.
+
+  &gt; Expected to find a global registry (this usually means you are trying to define steps or hooks in support/e2e.js, which is not supported) (this might be a bug, please report at https://github.com/badeball/cypress-cucumber-preprocessor)
+
+When Cypress detects uncaught errors originating from your test code it will automatically fail the current test.
+
+Cypress could not associate this error to any specific test.
+
+We dynamically generated a new test to display this failure." type="Error"><![CDATA[Error: The following error originated from your test code, not from Cypress.
+
+  > Expected to find a global registry (this usually means you are trying to define steps or hooks in support/e2e.js, which is not supported) (this might be a bug, please report at https://github.com/badeball/cypress-cucumber-preprocessor)
+
+When Cypress detects uncaught errors originating from your test code it will automatically fail the current test.
+
+Cypress could not associate this error to any specific test.
+
+We dynamically generated a new test to display this failure.
+    at createError (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:361:16)
+    at fail (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:414:39)
+    at assert (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:420:9)
+    at assertAndReturn (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:423:9)
+    at getRegistry (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:12370:49)
+    at defineBefore (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:13822:38)
+    at eval (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:13964:51)
+    at eval (http://localhost:3000/__cypress/tests?p=cypress/support/e2e.ts:13970:3)
+    at eval (<anonymous>)
+    at <unknown> (http://localhost:3000/__cypress/runner/cypress_runner.js:112902:23)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

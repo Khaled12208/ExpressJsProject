@@ -113,7 +113,192 @@ graph TD
 - Separate business logic from data access
 - Add proper dependency injection
 
-### Project Structure
+### Detailed C4 Component Diagram
+
+```mermaid
+graph TD
+    subgraph Client Layer
+        A1[Web Client]
+        A2[Mobile Client]
+        A3[API Client]
+    end
+
+    subgraph API Gateway
+        B[Load Balancer/Nginx]
+    end
+
+    subgraph Express Application
+        C[Express Server]
+
+        subgraph Authentication Components
+            D1[Auth Controller]
+            D2[JWT Service]
+            D3[Password Service]
+            D4[User Model]
+        end
+
+        subgraph User Management
+            E1[User Controller]
+            E2[User Validation]
+            E3[User Model]
+        end
+
+        subgraph Product Management
+            F1[Product Controller]
+            F2[Product Validation]
+            F3[Product Model]
+        end
+
+        subgraph Middleware Services
+            G1[Auth Middleware]
+            G2[Error Handler]
+            G3[Logger Service]
+            G4[Request Validator]
+        end
+    end
+
+    subgraph Database Layer
+        H1[MongoDB Primary]
+        H2[MongoDB Secondary]
+    end
+
+    %% Client to API Gateway
+    A1 -->|HTTPS| B
+    A2 -->|HTTPS| B
+    A3 -->|HTTPS| B
+
+    %% API Gateway to Express
+    B -->|Proxy| C
+
+    %% Middleware Connections
+    C --> G1
+    C --> G2
+    C --> G3
+    C --> G4
+
+    %% Auth Flow
+    C -->|/auth routes| D1
+    D1 --> D2
+    D1 --> D3
+    D2 --> D4
+    D3 --> D4
+    D4 -->|Read/Write| H1
+    H1 -->|Replicate| H2
+
+    %% User Management Flow
+    C -->|/users routes| E1
+    E1 --> E2
+    E1 --> G1
+    E2 --> E3
+    E3 -->|Read/Write| H1
+
+    %% Product Management Flow
+    C -->|/products routes| F1
+    F1 --> F2
+    F1 --> G1
+    F2 --> F3
+    F3 -->|Read/Write| H1
+
+    %% Styling
+    classDef clientLayer fill:#e9e9e9,stroke:#333,stroke-width:2px
+    classDef gateway fill:#d1f2ff,stroke:#333,stroke-width:2px
+    classDef application fill:#ffe7d1,stroke:#333,stroke-width:2px
+    classDef database fill:#d1ffd1,stroke:#333,stroke-width:2px
+    classDef middleware fill:#ffd1d1,stroke:#333,stroke-width:2px
+
+    class A1,A2,A3 clientLayer
+    class B gateway
+    class C,D1,D2,D3,D4,E1,E2,E3,F1,F2,F3 application
+    class H1,H2 database
+    class G1,G2,G3,G4 middleware
+```
+
+#### Component Details
+
+1. **Client Layer**
+
+   - Web Clients (Browsers)
+   - Mobile Applications
+   - Third-party API Consumers
+
+2. **API Gateway**
+
+   - Load Balancing
+   - Request Routing
+   - Rate Limiting
+   - SSL Termination
+
+3. **Authentication Components**
+
+   - JWT Token Generation/Validation
+   - Password Hashing/Verification
+   - User Session Management
+   - Security Middleware
+
+4. **User Management**
+
+   - CRUD Operations
+   - User Profile Management
+   - Role-based Access Control
+   - Input Validation
+
+5. **Product Management**
+
+   - Product CRUD Operations
+   - Inventory Management
+   - Category Management
+   - Product Validation
+
+6. **Middleware Services**
+
+   - Request Authentication
+   - Error Handling & Logging
+   - Request Validation
+   - Response Formatting
+
+7. **Database Layer**
+   - Primary MongoDB Instance
+   - Secondary Replica (for redundancy)
+   - Data Persistence
+   - Backup Management
+
+#### Service Interactions
+
+1. **Authentication Flow**
+
+```mermaid
+sequenceDiagram
+    Client->>+API Gateway: Authentication Request
+    API Gateway->>+Auth Controller: Forward Request
+    Auth Controller->>+JWT Service: Generate/Validate Token
+    Auth Controller->>+Password Service: Hash/Verify Password
+    Password Service->>+User Model: User Data Access
+    User Model->>+MongoDB: Database Operations
+    MongoDB-->>-User Model: Operation Result
+    User Model-->>-Password Service: User Data
+    Password Service-->>-Auth Controller: Verification Result
+    JWT Service-->>-Auth Controller: Token
+    Auth Controller-->>-API Gateway: Auth Response
+    API Gateway-->>-Client: Final Response
+```
+
+2. **Protected Resource Flow**
+
+```mermaid
+sequenceDiagram
+    Client->>+API Gateway: Resource Request + JWT
+    API Gateway->>+Auth Middleware: Validate Token
+    Auth Middleware->>+Resource Controller: Authorized Request
+    Resource Controller->>+Model: Data Operations
+    Model->>+MongoDB: Database Query
+    MongoDB-->>-Model: Query Result
+    Model-->>-Resource Controller: Data
+    Resource Controller-->>-Auth Middleware: Response
+    Auth Middleware-->>-API Gateway: Validated Response
+    API Gateway-->>-Client: Final Response
+```
+
+## Project Structure
 
 ```
 express-typescript-api/
@@ -489,174 +674,3 @@ Note: These examples assume you're running the server locally on port 3001. Repl
 ## License
 
 ISC
-
-### Detailed C4 Component Diagram
-
-```mermaid
-graph TD
-    subgraph Client Layer
-        A1[Web Client]
-        A2[Mobile Client]
-        A3[API Client]
-    end
-
-    subgraph API Gateway
-        B[Load Balancer/Nginx]
-    end
-
-    subgraph Express Application
-        C[Express Server]
-
-        subgraph Authentication Components
-            D1[Auth Controller]
-            D2[JWT Service]
-            D3[Password Service]
-            D4[User Model]
-        end
-
-        subgraph User Management
-            E1[User Controller]
-            E2[User Validation]
-            E3[User Model]
-        end
-
-        subgraph Product Management
-            F1[Product Controller]
-            F2[Product Validation]
-            F3[Product Model]
-        end
-
-        subgraph Middleware Services
-            G1[Auth Middleware]
-            G2[Error Handler]
-            G3[Logger Service]
-            G4[Request Validator]
-        end
-    end
-
-    subgraph Database Layer
-        H1[MongoDB Primary]
-        H2[MongoDB Secondary]
-    end
-
-    %% Client to API Gateway
-    A1 -->|HTTPS| B
-    A2 -->|HTTPS| B
-    A3 -->|HTTPS| B
-
-    %% API Gateway to Express
-    B -->|Proxy| C
-
-    %% Middleware Connections
-    C --> G1
-    C --> G2
-    C --> G3
-    C --> G4
-
-    %% Auth Flow
-    C -->|/auth routes| D1
-    D1 --> D2
-    D1 --> D3
-    D2 --> D4
-    D3 --> D4
-    D4 -->|Read/Write| H1
-    H1 -->|Replicate| H2
-
-    %% User Management Flow
-    C -->|/users routes| E1
-    E1 --> E2
-    E1 --> G1
-    E2 --> E3
-    E3 -->|Read/Write| H1
-
-    %% Product Management Flow
-    C -->|/products routes| F1
-    F1 --> F2
-    F1 --> G1
-    F2 --> F3
-    F3 -->|Read/Write| H1
-
-    %% Styling
-    classDef clientLayer fill:#e9e9e9,stroke:#333,stroke-width:2px
-    classDef gateway fill:#d1f2ff,stroke:#333,stroke-width:2px
-    classDef application fill:#ffe7d1,stroke:#333,stroke-width:2px
-    classDef database fill:#d1ffd1,stroke:#333,stroke-width:2px
-    classDef middleware fill:#ffd1d1,stroke:#333,stroke-width:2px
-
-    class A1,A2,A3 clientLayer
-    class B gateway
-    class C,D1,D2,D3,D4,E1,E2,E3,F1,F2,F3 application
-    class H1,H2 database
-    class G1,G2,G3,G4 middleware
-```
-
-#### Component Details
-
-1. **Client Layer**
-
-   - Web Clients (Browsers)
-   - Mobile Applications
-   - Third-party API Consumers
-
-2. **API Gateway**
-
-   - Load Balancing
-   - Request Routing
-   - Rate Limiting
-   - SSL Termination
-
-3. **Authentication Components**
-
-   - JWT Token Generation/Validation
-   - Password Hashing/Verification
-   - User Session Management
-   - Security Middleware
-
-4. **User Management**
-
-   - CRUD Operations
-   - User Profile Management
-   - Role-based Access Control
-   - Input Validation
-
-5. **Product Management**
-
-   - Product CRUD Operations
-   - Inventory Management
-   - Category Management
-   - Product Validation
-
-6. **Middleware Services**
-
-   - Request Authentication
-   - Error Handling & Logging
-   - Request Validation
-   - Response Formatting
-
-7. **Database Layer**
-   - Primary MongoDB Instance
-   - Secondary Replica (for redundancy)
-   - Data Persistence
-   - Backup Management
-
-#### Service Interactions
-
-1. **Authentication Flow**
-
-   ```sequence
-   Client->API Gateway: Authentication Request
-   API Gateway->Auth Controller: Forward Request
-   Auth Controller->JWT Service: Generate/Validate Token
-   Auth Controller->Password Service: Hash/Verify Password
-   Password Service->User Model: User Data Access
-   User Model->MongoDB: Database Operations
-   ```
-
-2. **Protected Resource Flow**
-   ```sequence
-   Client->API Gateway: Resource Request + JWT
-   API Gateway->Auth Middleware: Validate Token
-   Auth Middleware->Resource Controller: Authorized Request
-   Resource Controller->Model: Data Operations
-   Model->MongoDB: Database Query
-   ```

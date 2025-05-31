@@ -226,23 +226,62 @@ docker-compose run test
 
 ## API Documentation
 
-### Authentication Endpoints
+### Postman Collection
+
+This project includes a Postman collection and environment for testing the API endpoints. You can find them in the `postman` directory:
+
+- `ExpressTypeScriptAPI.postman_collection.json`: Contains all API endpoints
+- `ExpressTypeScriptAPI.postman_environment.json`: Contains environment variables
+
+To use the Postman collection:
+
+1. Import both files into Postman
+2. Select the "Express TypeScript API - Local" environment
+3. Register a new user using the Auth/Register endpoint
+4. Use the returned token in the Auth/Login response to set the `authToken` environment variable
+5. You can now use all other endpoints with authentication
+
+### API Endpoints
+
+#### Authentication
 
 - POST /api/v1/auth/register - Register a new user
+  ```json
+  {
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "Password123!"
+  }
+  ```
 - POST /api/v1/auth/login - Login user
+  ```json
+  {
+    "email": "test@example.com",
+    "password": "Password123!"
+  }
+  ```
 
-### Users Endpoints
+#### Users
 
 - GET /api/v1/users - Get all users
 - GET /api/v1/users/:id - Get user by ID
 - PUT /api/v1/users/:id - Update user
 - DELETE /api/v1/users/:id - Delete user
 
-### Products Endpoints
+#### Products
 
 - GET /api/v1/products - Get all products
 - GET /api/v1/products/:id - Get product by ID
 - POST /api/v1/products - Create new product
+  ```json
+  {
+    "name": "New Product",
+    "description": "Product description",
+    "price": 99.99,
+    "category": "Electronics",
+    "stock": 100
+  }
+  ```
 - PUT /api/v1/products/:id - Update product
 - DELETE /api/v1/products/:id - Delete product
 

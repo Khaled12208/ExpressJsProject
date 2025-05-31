@@ -46,20 +46,72 @@ This project is a scalable and maintainable Express.js API built with TypeScript
 
 ## Project Architecture
 
-### C4 Model Diagram
+### C4 Model Diagram (Current Implementation)
 
 ```mermaid
 graph TD
-    A[Client] -->|HTTP/HTTPS| B[Load Balancer]
-    B --> C[Express API Container]
-    C --> D[MongoDB Container]
-    C --> E[Authentication Service]
-    C --> F[Product Service]
-    C --> G[User Service]
-    E --> D
-    F --> D
-    G --> D
+    A[Client] -->|HTTP/HTTPS| B[Express Server]
+
+    subgraph Express Application
+        B --> C[Routes Layer]
+        C --> D[Controllers]
+        D --> E[Models Layer]
+
+        subgraph Middleware
+            F[Auth Middleware]
+            G[Error Handler]
+            H[Logger]
+        end
+
+        B --> F
+        B --> G
+        B --> H
+    end
+
+    E -->|Mongoose| I[MongoDB]
+
+    %% Current Implementation Notes
+    style Express Application fill:#d1f2ff,stroke:#333,stroke-width:2px
+    style I fill:#d1ffd1,stroke:#333,stroke-width:2px
 ```
+
+#### Current Architecture Explanation
+
+1. **Express Server**
+
+   - Single entry point (`server.ts`)
+   - Handles HTTP requests directly
+   - Applies global middleware
+
+2. **Routes Layer** (`/routes/v1/`)
+
+   - `auth.ts`: Authentication routes
+   - `users.ts`: User management routes
+   - `products.ts`: Product management routes
+
+3. **Controllers** (`/controllers/`)
+
+   - Direct communication with models
+   - Business logic implementation
+   - Request/Response handling
+
+4. **Models Layer** (`/models/`)
+
+   - Mongoose schemas and models
+   - Direct database interactions
+   - No abstraction layer between controllers and database
+
+5. **Middleware** (`/middlewares/`)
+   - Authentication verification
+   - Error handling
+   - Request logging
+
+#### Areas for Improvement
+
+- Add a service layer between controllers and models
+- Implement repository pattern for database operations
+- Separate business logic from data access
+- Add proper dependency injection
 
 ### Project Structure
 

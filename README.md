@@ -337,6 +337,155 @@ To use the Postman collection:
 - PUT /api/v1/products/:id - Update product
 - DELETE /api/v1/products/:id - Delete product
 
+## API Examples (curl)
+
+### Authentication
+
+#### Register a new user
+
+```bash
+curl -X POST http://localhost:3001/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "Password123!"
+  }'
+```
+
+#### Login
+
+```bash
+curl -X POST http://localhost:3001/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "Password123!"
+  }'
+```
+
+### Users
+
+#### Get all users
+
+```bash
+curl -X GET http://localhost:3001/api/v1/users \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### Get user by ID
+
+```bash
+curl -X GET http://localhost:3001/api/v1/users/USER_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### Update user
+
+```bash
+curl -X PUT http://localhost:3001/api/v1/users/USER_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "name": "Updated Name"
+  }'
+```
+
+#### Delete user
+
+```bash
+curl -X DELETE http://localhost:3001/api/v1/users/USER_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Products
+
+#### Get all products
+
+```bash
+curl -X GET http://localhost:3001/api/v1/products \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### Get product by ID
+
+```bash
+curl -X GET http://localhost:3001/api/v1/products/PRODUCT_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### Create new product
+
+```bash
+curl -X POST http://localhost:3001/api/v1/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "name": "New Product",
+    "description": "Product description",
+    "price": 99.99,
+    "category": "Electronics",
+    "stock": 100
+  }'
+```
+
+#### Update product
+
+```bash
+curl -X PUT http://localhost:3001/api/v1/products/PRODUCT_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "name": "Updated Product",
+    "price": 149.99
+  }'
+```
+
+#### Delete product
+
+```bash
+curl -X DELETE http://localhost:3001/api/v1/products/PRODUCT_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Example Usage Flow
+
+1. Register a new user and save the token:
+
+```bash
+TOKEN=$(curl -X POST http://localhost:3001/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "Password123!"
+  }' | jq -r '.token')
+```
+
+2. Create a new product:
+
+```bash
+PRODUCT_ID=$(curl -X POST http://localhost:3001/api/v1/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "name": "Test Product",
+    "description": "Test Description",
+    "price": 99.99,
+    "category": "Test",
+    "stock": 10
+  }' | jq -r '._id')
+```
+
+3. Get the created product:
+
+```bash
+curl -X GET http://localhost:3001/api/v1/products/$PRODUCT_ID \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Note: These examples assume you're running the server locally on port 3001. Replace `YOUR_JWT_TOKEN`, `USER_ID`, and `PRODUCT_ID` with actual values.
+
 ## License
 
 ISC

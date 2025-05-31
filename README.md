@@ -179,8 +179,8 @@ Test suites:
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd express-typescript-api
+git clone git@github.com:Khaled12208/ExpressJsProject.git
+cd ExpressJsProject
 ```
 
 2. Install dependencies:

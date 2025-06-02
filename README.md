@@ -41,8 +41,6 @@ This project is a scalable and maintainable Express.js API built with TypeScript
 - **Testing**: Jest & Supertest
 - **Containerization**: Docker & Docker Compose
 - **Code Quality**: ESLint & Prettier
-- **API Documentation**: Swagger/OpenAPI
-- **Version Control**: Git
 
 ## Project Architecture
 
@@ -303,31 +301,12 @@ sequenceDiagram
 ```
 express-typescript-api/
 ├── 📁 src/
-│   ├── 📁 controllers/
-│   │   ├── authController.ts
-│   │   ├── productController.ts
-│   │   └── userController.ts
-│   ├── 📁 models/
-│   │   ├── User.ts
-│   │   └── Product.ts
+│   ├── 📁 controllers/  # controllers
+│   ├── 📁 models/  # data models
 │   ├── 📁 routes/
-│   │   └── v1/
-│   │       ├── auth.ts
-│   │       ├── products.ts
-│   │       └── users.ts
-│   ├── 📁 middlewares/
-│   │   ├── authMiddleware.ts
-│   │   ├── errorHandler.ts
-│   │   └── loggerMiddleware.ts
+│   │   └── v1/  # API Endpoints
+│   ├── 📁 middlewares/  # application middlerwares
 │   └── server.ts
-├── 📁 tests/
-│   ├── 📁 integration/
-│   │   ├── auth.test.ts
-│   │   ├── products.test.ts
-│   │   └── users.test.ts
-│   ├── 📁 unit/
-│   │   └── controllers/
-│   └── setup.ts
 ├── 📁 scripts/
 │   └── wait-for-db.js
 ├── docker-compose.yml
@@ -383,26 +362,6 @@ erDiagram
     USER ||--o{ PRODUCT : manages
 ```
 
-## Test Coverage
-
-Current test coverage metrics:
-
-- Statements: 95%
-- Branches: 90%
-- Functions: 93%
-- Lines: 94%
-
-Test suites:
-
-- Integration Tests
-  - Authentication
-  - User Management
-  - Product Management
-- Unit Tests
-  - Controllers
-  - Middleware
-  - Models
-
 ## User Manual
 
 ### Prerequisites
@@ -443,23 +402,16 @@ npm run dev
 1. Build and start containers:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 2. Run tests in Docker:
 
 ```bash
-docker-compose run test
+docker compose run test
 ```
 
-### Available Scripts
 
-- `npm run dev`: Start development server
-- `npm run build`: Build production version
-- `npm start`: Start production server
-- `npm test`: Run tests
-- `npm run lint`: Check code style
-- `npm run format`: Format code
 
 ## API Documentation
 
@@ -477,199 +429,6 @@ To use the Postman collection:
 3. Register a new user using the Auth/Register endpoint
 4. Use the returned token in the Auth/Login response to set the `authToken` environment variable
 5. You can now use all other endpoints with authentication
-
-### API Endpoints
-
-#### Authentication
-
-- POST /api/v1/auth/register - Register a new user
-  ```json
-  {
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "Password123!"
-  }
-  ```
-- POST /api/v1/auth/login - Login user
-  ```json
-  {
-    "email": "test@example.com",
-    "password": "Password123!"
-  }
-  ```
-
-#### Users
-
-- GET /api/v1/users - Get all users
-- GET /api/v1/users/:id - Get user by ID
-- PUT /api/v1/users/:id - Update user
-- DELETE /api/v1/users/:id - Delete user
-
-#### Products
-
-- GET /api/v1/products - Get all products
-- GET /api/v1/products/:id - Get product by ID
-- POST /api/v1/products - Create new product
-  ```json
-  {
-    "name": "New Product",
-    "description": "Product description",
-    "price": 99.99,
-    "category": "Electronics",
-    "stock": 100
-  }
-  ```
-- PUT /api/v1/products/:id - Update product
-- DELETE /api/v1/products/:id - Delete product
-
-## API Examples (curl)
-
-### Authentication
-
-#### Register a new user
-
-```bash
-curl -X POST http://localhost:3001/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "Password123!"
-  }'
-```
-
-#### Login
-
-```bash
-curl -X POST http://localhost:3001/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "Password123!"
-  }'
-```
-
-### Users
-
-#### Get all users
-
-```bash
-curl -X GET http://localhost:3001/api/v1/users \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-#### Get user by ID
-
-```bash
-curl -X GET http://localhost:3001/api/v1/users/USER_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-#### Update user
-
-```bash
-curl -X PUT http://localhost:3001/api/v1/users/USER_ID \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "Updated Name"
-  }'
-```
-
-#### Delete user
-
-```bash
-curl -X DELETE http://localhost:3001/api/v1/users/USER_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-### Products
-
-#### Get all products
-
-```bash
-curl -X GET http://localhost:3001/api/v1/products \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-#### Get product by ID
-
-```bash
-curl -X GET http://localhost:3001/api/v1/products/PRODUCT_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-#### Create new product
-
-```bash
-curl -X POST http://localhost:3001/api/v1/products \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "New Product",
-    "description": "Product description",
-    "price": 99.99,
-    "category": "Electronics",
-    "stock": 100
-  }'
-```
-
-#### Update product
-
-```bash
-curl -X PUT http://localhost:3001/api/v1/products/PRODUCT_ID \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "name": "Updated Product",
-    "price": 149.99
-  }'
-```
-
-#### Delete product
-
-```bash
-curl -X DELETE http://localhost:3001/api/v1/products/PRODUCT_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-### Example Usage Flow
-
-1. Register a new user and save the token:
-
-```bash
-TOKEN=$(curl -X POST http://localhost:3001/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "Password123!"
-  }' | jq -r '.token')
-```
-
-2. Create a new product:
-
-```bash
-PRODUCT_ID=$(curl -X POST http://localhost:3001/api/v1/products \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "name": "Test Product",
-    "description": "Test Description",
-    "price": 99.99,
-    "category": "Test",
-    "stock": 10
-  }' | jq -r '._id')
-```
-
-3. Get the created product:
-
-```bash
-curl -X GET http://localhost:3001/api/v1/products/$PRODUCT_ID \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-Note: These examples assume you're running the server locally on port 3001. Replace `YOUR_JWT_TOKEN`, `USER_ID`, and `PRODUCT_ID` with actual values.
 
 ## License
 

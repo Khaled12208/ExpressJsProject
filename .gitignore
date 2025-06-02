@@ -22,6 +22,8 @@ build/
 
 # Test coverage
 coverage/
+.nyc_output/
+reports/coverage-*
 
 # Logs
 logs/*

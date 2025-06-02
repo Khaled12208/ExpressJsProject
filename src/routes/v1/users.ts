@@ -1,20 +1,23 @@
 import { Router } from 'express';
-import { userController } from '../../controllers/userController';
+import { UsersController } from '../../controllers/userController';
 import { authMiddleware } from '../../middlewares/authMiddleware';
 
 export const userRouter = Router();
+
+// Create controller instance
+const usersController = new UsersController();
 
 // Protect all user routes with authentication
 userRouter.use(authMiddleware);
 
 // Get all users
-userRouter.get('/', userController.getAllUsers);
+userRouter.get('/', usersController.getAllUsers);
 
 // Get user by ID
-userRouter.get('/:id', userController.getUserById);
+userRouter.get('/:id', usersController.getUserById);
 
 // Update user
-userRouter.put('/:id', userController.updateUser);
+userRouter.put('/:id', usersController.updateUser);
 
 // Delete user
-userRouter.delete('/:id', userController.deleteUser);
+userRouter.delete('/:id', usersController.deleteUser);
